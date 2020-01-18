@@ -1,0 +1,6 @@
+unlock.admin:
+  title: 'Unlock Protocol settings'
+  description: 'Customize various locks and content'
+  parent: system.admin_config_content
+  route_name: unlock.settings
+  weight: 10

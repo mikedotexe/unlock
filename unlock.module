@@ -1,0 +1,76 @@
+<?php
+
+/**
+ * @file
+ * Contains unlock.module.
+ */
+
+use Drupal\Core\Link;
+use Drupal\Core\Routing\RouteMatchInterface;
+
+const SETTINGS = 'unlock.settings';
+/**
+ * Implements hook_help().
+ */
+function unlock_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.unlock':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('This module integrates with Unlock Protocol, providing premium blocks that can be "unlocked" by a payment with digital currency.') . '</p>';
+      $output .= '<a href="https://unlock-protocol.com/" target="_blank">' . t('Unlock Website') . '</a>';
+      $output .= '<h3>' . t('Instructions') . '</h3>';
+      $output .= '<p>' . t('Use the Unlock Protocol\'s website to create a lock. Look for the dashboard link. Once created, copy the address to the lock, it will start with 0x… and look like a random hash.') . '</p>';
+      $output .= '<p>' . t('Have an admin enter the lock address in the ') . '<a href="/admin/config/content/unlock">' . t('Unlock settings page') . '</a></p>';
+      $output .= '<p>' . t('Add premium content blocks using the provided custom block type.<br/>Structure » Block layout » Add custom block. Choose "Unlock Premium Content"') . '</p>';
+      $output .= '<p>' . t('Add the button to subscribe, usually below or above the premium content. This is a custom block. Unlike the provided custom block <em>type</em>, this block is added by:<br/>Structure » Block layout. Find the appropriate region and click <strong>Place block</strong>. It\'s called "Unlock button block"') . '</p>';
+      $output .= '<p>' . t('Premium blocks will hide/show based on the user\'s subscription status.') . '</p>';
+      $output .= '<p>' . t('Check the console if there seems to be trouble.') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function unlock_theme() {
+  return [
+    'unlock_button_block' => [
+      'render element' => 'children',
+      'variables' => [
+        'label' => null,
+      ],
+    ],    
+  ];
+}
+
+/**
+ * Implements hook_install().
+ */
+function unlock_install() {
+  if (!drupal_installation_attempted()) {
+    $settings_link = Link::createFromRoute('settings here', 'unlock.settings')->toString();
+    \Drupal::messenger()->addMessage(t("Modify the Unlock Protocol %link.", ['%link' => $settings_link]));
+  }
+}
+
+function unlock_preprocess_block(&$variables) {
+  $config = \Drupal::config(SETTINGS);
+  $lock_address = $config->get('address');
+  
+  if ($variables['base_plugin_id'] == 'block_content') {
+    $uuid = $variables['derivative_plugin_id'];
+    $block = \Drupal::service('entity.repository')->loadEntityByUuid('block_content', $uuid);
+    if ($block->bundle() == 'unlock_block') {
+      // This is an Unlock Protocol premium block, attach the javascript.
+      $variables['#attached'] = [
+        'library' => ['unlock/externaljs'],
+        'drupalSettings' => ['unlock' => ['lockAddress' => $lock_address]],
+      ];
+      $variables['attributes']['class'][] = 'unlock-protocol__locked';
+    }
+
+  }
+}

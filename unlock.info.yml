@@ -1,0 +1,5 @@
+name: 'Unlock Protocol'
+type: module
+description: 'Unlock Protocol integration module with premium content blocks'
+core: 8.x
+package: 'Digital Payments'

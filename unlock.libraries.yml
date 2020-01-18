@@ -1,0 +1,25 @@
+internaljs:
+  version: 1.0.0
+  js:
+    js/unlock-listener.js: {}
+    js/unlock.js: {}
+  dependencies:
+    - core/jquery
+    - core/jquery.once
+    - core/drupal
+    - core/drupalSettings
+
+externaljs:
+  remote: https://github.com/unlock-protocol
+  version: 1.0.0
+  license:
+    name: MIT
+    url: https://github.com/unlock-protocol/unlock/blob/master/LICENSE
+    gpl-compatible: true
+  css:
+    theme:
+      css/unlock.css: {}
+  js:
+    //paywall.unlock-protocol.com/static/unlock.1.0.min.js: { type: external, minified: true }
+  dependencies:
+    - unlock/internaljs

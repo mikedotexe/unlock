@@ -1,0 +1,7 @@
+langcode: en
+status: true
+dependencies: {  }
+id: unlock_block
+label: 'Unlock Premium Content'
+revision: 0
+description: 'Premium content that is unlocked via digital payment with Unlock Protocol'

@@ -1,0 +1,7 @@
+unlock.settings:
+  path: '/admin/config/content/unlock'
+  defaults:
+    _form: '\Drupal\unlock\Form\SettingsForm'
+    _title: 'Unlock Protocol settings'
+  requirements:
+    _permission: 'administer content'
